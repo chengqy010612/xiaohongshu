@@ -1,0 +1,10 @@
+{
+  "Roboto": {
+    "100": "Roboto-Thin.ttf",
+    "300": "Roboto-Light.ttf",
+    "400": "Roboto-Regular.ttf",
+    "500": "Roboto-Medium.ttf",
+    "700": "Roboto-Bold.ttf",
+    "900": "Roboto-Black.ttf"
+  }
+}
