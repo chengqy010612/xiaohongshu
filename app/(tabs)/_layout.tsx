@@ -16,6 +16,7 @@ export default function TabLayout() {
   })
   return (
     <Tabs
+      initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
@@ -30,6 +31,12 @@ export default function TabLayout() {
         },
       }}
     >
+      {/* <Tabs.Screen 
+        name="index" 
+        options={{ 
+          href: null, // <--- 这一行是关键，设置为 null 就会隐藏按钮
+        }} 
+      /> */}
       <Tabs.Screen
         name="home"
         options={{

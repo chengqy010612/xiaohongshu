@@ -10,18 +10,23 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
+import VideoPlayer from './video-player';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 interface WaterfallItem {
   id: string;
+  type: 'image' | 'video'; // 支持图片和视频
   image: string;
+  videoUrl?: string; // 视频URL，仅在type为video时需要
   title: string;
+  description: string;
   user: {
     name: string;
     avatar: string;
   };
   likes: number;
+  comments?: number;
   height: number; // 图片高度，用于瀑布流布局
 }
 
@@ -106,34 +111,85 @@ const WaterfallFlow: React.FC<WaterfallFlowProps> = ({
   };
 
   // 渲染瀑布流项目
-  const renderWaterfallItem = ({ item }: { item: WaterfallItem }) => (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => onItemPress && onItemPress(item)}
-    >
-      <Image
-        source={{ uri: item.image }}
-        style={[
-          styles.itemImage,
-          { height: item.height || 200 } // 使用动态高度，默认200
-        ]}
-        resizeMode="cover"
-      />
-      <View style={styles.itemContent}>
-        <Text style={styles.itemTitle} numberOfLines={2}>{item.title}</Text>
-        <View style={styles.itemFooter}>
-          <Image
-            source={{ uri: item.user.avatar }}
-            style={styles.userAvatar}
-          />
-          <Text style={styles.userName}>{item.user.name}</Text>
-          <View style={styles.likesContainer}>
-            <Text style={styles.likesText}>❤️ {item.likes}</Text>
+  const renderWaterfallItem = ({ item }: { item: WaterfallItem }) => {
+    const handleItemPress = () => {
+      if (item.type === 'video' && item.videoUrl) {
+        // 视频项点击进入全屏播放页面
+        onItemPress && onItemPress(item);
+      }
+    };
+
+    if (item.type === 'video' && item.videoUrl) {
+      // 渲染视频项目
+      return (
+        <TouchableOpacity
+          style={styles.itemContainer}
+          onPress={handleItemPress}
+        >
+          <View style={styles.videoThumbnailContainer}>
+            <Image
+              source={{ uri: item.image }}
+              style={[
+                styles.itemImage,
+                { height: item.height || 200 }
+              ]}
+              resizeMode="cover"
+            />
+            <View style={styles.videoOverlay}>
+              <Text style={styles.videoPlayIcon}>▶️</Text>
+              <Text style={styles.videoTypeText}>视频</Text>
+            </View>
+          </View>
+          <View style={styles.itemContent}>
+            <Text style={styles.itemTitle} numberOfLines={2}>{item.title}</Text>
+            <View style={styles.itemFooter}>
+              <Image
+                source={{ uri: item.user.avatar }}
+                style={styles.userAvatar}
+              />
+              <Text style={styles.userName}>{item.user.name}</Text>
+              <View style={styles.likesContainer}>
+                <Text style={styles.likesText}>❤️ {item.likes}</Text>
+                {item.comments && (
+                  <Text style={styles.commentsText}>💬 {item.comments}</Text>
+                )}
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+
+    // 渲染图片项目
+    return (
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => onItemPress && onItemPress(item)}
+      >
+        <Image
+          source={{ uri: item.image }}
+          style={[
+            styles.itemImage,
+            { height: item.height || 200 }
+          ]}
+          resizeMode="cover"
+        />
+        <View style={styles.itemContent}>
+          <Text style={styles.itemTitle} numberOfLines={2}>{item.title}</Text>
+          <View style={styles.itemFooter}>
+            <Image
+              source={{ uri: item.user.avatar }}
+              style={styles.userAvatar}
+            />
+            <Text style={styles.userName}>{item.user.name}</Text>
+            <View style={styles.likesContainer}>
+              <Text style={styles.likesText}>❤️ {item.likes}</Text>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   // 渲染包含两列的行
   const renderRow = ({ index }: { index: number }) => {
@@ -209,6 +265,30 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  videoThumbnailContainer: {
+    position: 'relative',
+  },
+  videoOverlay: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  videoPlayIcon: {
+    fontSize: 12,
+    color: '#fff',
+    marginRight: 4,
+  },
+  videoTypeText: {
+    fontSize: 10,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   itemImage: {
     width: '100%',
     height: 200,
@@ -240,8 +320,14 @@ const styles = StyleSheet.create({
   likesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 'auto',
   },
   likesText: {
+    fontSize: 12,
+    color: '#666',
+    marginRight: 8,
+  },
+  commentsText: {
     fontSize: 12,
     color: '#666',
   },
