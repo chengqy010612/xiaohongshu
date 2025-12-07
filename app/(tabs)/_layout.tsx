@@ -124,6 +124,7 @@ export default function TabLayout() {
         name="message"
         options={{
           title: "消息",
+          tabBarBadge: 71,
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="message" color={color} />
           ),

@@ -10,7 +10,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import Video from 'react-native-video';
+import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import { ThemedView } from './themed-view';
 import { ThemedText } from './themed-text';
 
@@ -71,13 +71,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setIsPlaying(!isPlaying);
   };
 
-  // 处理视频结束
-  const handleVideoEnd = () => {
-    setIsPlaying(false);
-  };
-
   // 视频播放器引用
   const videoRef = useRef<Video>(null);
+
+  // 处理视频状态更新
+  const handleVideoStatusUpdate = (status: AVPlaybackStatus) => {
+    if (status.isLoaded && status.didJustFinish) {
+      setIsPlaying(false);
+    }
+  };
 
   // 处理点赞
   const handleLike = () => {
@@ -272,11 +274,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             ref={videoRef}
             source={{ uri: videoUrl }}
             style={styles.videoPlayer}
-            controls={false}
-            resizeMode="cover"
-            onEnd={handleVideoEnd}
-            paused={!isPlaying}
-            repeat={false}
+            useNativeControls={false}
+            resizeMode={ResizeMode.COVER}
+            onPlaybackStatusUpdate={handleVideoStatusUpdate}
+            shouldPlay={isPlaying}
+            isLooping={false}
           />
         ) : (
           <Image source={{ uri: thumbnailUrl }} style={styles.videoThumbnail} />

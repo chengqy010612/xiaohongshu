@@ -16,12 +16,14 @@ import { ScrollView as GestureHandlerScrollView } from "react-native-gesture-han
 import { ActionSheet, Button } from "@ant-design/react-native"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { useNavigation } from "@react-navigation/native"
+import { useRouter } from "expo-router"
 import { DrawerContent } from "@/components/drawer-content"
 import WaterfallFlow from "@/components/waterfall-flow"
 import { mockWaterfallData, WaterfallItem } from "@/data/mock-data"
 import { wait } from "@/utils"
 
 const FirstRoute = ({ type }: { type: number }) => {
+  const router = useRouter()
   const [refreshing, setRefreshing] = React.useState(false)
   const [loadingMore, setLoadingMore] = React.useState(false)
   const [hasMore, setHasMore] = React.useState(true)
@@ -69,7 +71,7 @@ const FirstRoute = ({ type }: { type: number }) => {
 
   const handleItemPress = (item: WaterfallItem) => {
     console.log("点击了项目:", item.title)
-    // 这里可以添加导航到详情页的逻辑
+    router.push('/post-detail')
   }
 
   return (
@@ -119,9 +121,9 @@ const HomeScreen = () => {
   const layout = useWindowDimensions()
   const [index, setIndex] = React.useState(0)
   const [routes] = React.useState([
-    { key: "first", title: <Text style={{ fontSize: 12 }}>关注</Text> },
-    { key: "second", title: <Text style={{ fontSize: 12 }}>发现</Text> },
-    { key: "third", title: <Text style={{ fontSize: 12 }}>本地</Text> },
+    { key: "first", title: "关注" },
+    { key: "second", title: "发现" },
+    { key: "third", title: "本地" },
   ])
 
   // 获取导航对象
@@ -151,8 +153,12 @@ const HomeScreen = () => {
               </TouchableOpacity>
               <TabBar
                 {...props}
-                indicatorStyle={{ backgroundColor: "white" }}
-                style={{ backgroundColor: "#2196f3", width: 200 }}
+                indicatorStyle={{ backgroundColor: "white", height: 2 }}
+                style={{ backgroundColor: "#2196f3", flex: 1, width: 200 }}
+                labelStyle={{ fontSize: 12, fontWeight: "500" }}
+                activeColor="white"
+                inactiveColor="rgba(255, 255, 255, 0.7)"
+                tabStyle={{ paddingVertical: 8 }}
               />
               <IconSymbol
                 name="search"
