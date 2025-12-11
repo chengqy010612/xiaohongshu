@@ -21,8 +21,9 @@ import { DrawerContent } from "@/components/drawer-content"
 import WaterfallFlow from "@/components/waterfall-flow"
 import { mockWaterfallData, WaterfallItem } from "@/data/mock-data"
 import { wait } from "@/utils"
+import { StatusBar } from "expo-status-bar"
 
-const FirstRoute = ({ type }: { type: number }) => {
+export const FirstRoute = ({ type }: { type: number }) => {
   const router = useRouter()
   const [refreshing, setRefreshing] = React.useState(false)
   const [loadingMore, setLoadingMore] = React.useState(false)
@@ -87,31 +88,7 @@ const FirstRoute = ({ type }: { type: number }) => {
   )
 }
 
-// const SecondRoute = () => (
-//   <View
-//     style={{
-//       flex: 1,
-//       backgroundColor: "#673ab7",
-//       alignItems: "center",
-//       justifyContent: "center",
-//     }}
-//   >
-//     <Text>发现页面</Text>
-//   </View>
-// )
 
-// const ThirdRoute = () => (
-//   <View
-//     style={{
-//       flex: 1,
-//       backgroundColor: "#4caf50",
-//       alignItems: "center",
-//       justifyContent: "center",
-//     }}
-//   >
-//     <Text>本地页面</Text>
-//   </View>
-// )
 
 // 创建抽屉导航器
 const Drawer = createDrawerNavigator()
@@ -128,9 +105,11 @@ const HomeScreen = () => {
 
   // 获取导航对象
   const navigation = useNavigation()
+  const router = useRouter()
 
   return (
     <PageContainer>
+      <StatusBar backgroundColor="#fff" />
       <TabView
         navigationState={{ index, routes }}
         renderScene={SceneMap({
@@ -160,12 +139,14 @@ const HomeScreen = () => {
                 inactiveColor="rgba(255, 255, 255, 0.7)"
                 tabStyle={{ paddingVertical: 8 }}
               />
-              <IconSymbol
-                name="search"
-                size={24}
-                color="white"
-                style={styles.sideIcon}
-              />
+              <TouchableOpacity onPress={() => router.push('/search')}>
+                <IconSymbol
+                  name="search"
+                  size={24}
+                  color="white"
+                  style={styles.sideIcon}
+                />
+              </TouchableOpacity>
             </View>
           )
         }}

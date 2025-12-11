@@ -12,8 +12,6 @@ import {
 } from 'react-native';
 import VideoPlayer from './video-player';
 
-const { width: screenWidth } = Dimensions.get('window');
-
 interface WaterfallItem {
   id: string;
   type: 'image' | 'video'; // 支持图片和视频
@@ -54,9 +52,7 @@ const WaterfallFlow: React.FC<WaterfallFlowProps> = ({
   // 状态管理
   const [refreshing, setRefreshing] = useState(false);
   
-  // 获取屏幕宽度
-  const screenWidth = Dimensions.get('window').width;
-  const columnWidth = (screenWidth - 30) / 2; // 减去padding和gap
+  // 布局由样式控制，不需要预计算列宽
 
   // 使用useMemo优化数据分配
   const { leftColumnData, rightColumnData } = useMemo(() => {
@@ -150,9 +146,9 @@ const WaterfallFlow: React.FC<WaterfallFlowProps> = ({
               <Text style={styles.userName}>{item.user.name}</Text>
               <View style={styles.likesContainer}>
                 <Text style={styles.likesText}>❤️ {item.likes}</Text>
-                {item.comments && (
+                {/* {item.comments && (
                   <Text style={styles.commentsText}>💬 {item.comments}</Text>
-                )}
+                )} */}
               </View>
             </View>
           </View>

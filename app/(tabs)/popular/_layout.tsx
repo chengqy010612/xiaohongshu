@@ -8,7 +8,6 @@ import {
   Animated,
   ScrollView,
 } from 'react-native';
-import { ThemedView } from '@/components/themed-view';
 import { ThemedText } from '@/components/themed-text';
 import VideoPlayer from '@/components/video-player';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -129,12 +128,12 @@ const PopularVideoPage: React.FC = () => {
 
   if (!currentVideo) {
     return (
-      <ThemedView style={styles.container}>
+      <View style={styles.container}>
         <StatusBar hidden={true} />
         <View style={styles.emptyContainer}>
           <ThemedText style={styles.emptyText}>暂无更多视频</ThemedText>
         </View>
-      </ThemedView>
+      </View>
     );
   }
 

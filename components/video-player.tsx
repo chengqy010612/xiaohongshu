@@ -11,7 +11,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
-import { ThemedView } from './themed-view';
 import { ThemedText } from './themed-text';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -266,7 +265,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       {/* 视频缩略图/播放器 */}
       <View style={styles.videoContainer}>
         {isPlaying ? (
@@ -294,7 +293,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       {/* 评论弹窗 */}
       {renderCommentsModal()}
-    </ThemedView>
+    </View>
   );
 };
 
@@ -302,6 +301,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+    backgroundColor: '#000',
   },
   videoContainer: {
     width: screenWidth,

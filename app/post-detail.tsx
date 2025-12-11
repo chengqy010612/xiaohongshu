@@ -16,13 +16,16 @@ import {
   Modal,
   KeyboardAvoidingView,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActionSheet } from '@ant-design/react-native';
 import * as ImagePicker from 'expo-image-picker';
+import ShareModal, { ShareItem } from '../components/share-modal';
+import BaseModal from '../components/base-modal';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,30 +34,6 @@ const POST_IMAGES = [
   { type: 'component', id: '1' }, // The text-based image from the design
   { type: 'image', uri: 'https://picsum.photos/id/20/600/800', id: '2' },
   { type: 'image', uri: 'https://picsum.photos/id/36/600/800', id: '3' },
-];
-
-// Mock data for Share Modal
-const SHARE_CONTACTS = [
-  { name: '青禾锦年', avatar: 'https://api.dicebear.com/7.x/avataaars/png?seed=1' },
-  { name: '神泉本港壹号海鲜', avatar: 'https://api.dicebear.com/7.x/avataaars/png?seed=2' },
-  { name: '丫头好房分享', avatar: 'https://api.dicebear.com/7.x/avataaars/png?seed=3' },
-  { name: '静静霜烦恼', avatar: 'https://api.dicebear.com/7.x/avataaars/png?seed=4' },
-];
-
-const SHARE_APPS = [
-  { name: '私信好友', icon: 'chatbubble-ellipses', color: '#ff2442', type: 'ionicon' },
-  { name: '微信好友', icon: 'wechat', color: '#07c160', type: 'material' },
-  { name: '朋友圈', icon: 'camera-iris', color: '#07c160', type: 'material' },
-  { name: 'QQ好友', icon: 'qqchat', color: '#00a4ff', type: 'ant' },
-  { name: 'QQ空间', icon: 'star', color: '#f6c000', type: 'ant' },
-];
-
-const SHARE_ACTIONS = [
-  { name: '建群分享', icon: 'account-group-outline', type: 'material' },
-  { name: '生成分享图', icon: 'image-outline', type: 'ionicon' },
-  { name: '复制链接', icon: 'link', type: 'feather' },
-  { name: '为ta加热', icon: 'fire', type: 'material' },
-  { name: '不喜欢', icon: 'sentiment-dissatisfied', type: 'material' },
 ];
 
 export default function PostDetailScreen() {
@@ -68,6 +47,73 @@ export default function PostDetailScreen() {
   const [sortOrder, setSortOrder] = useState('latest'); // 'latest' or 'hot'
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const inputRef = useRef<TextInput>(null);
+  
+  // 自定义分享选项
+  const customApps: ShareItem[] = [
+    { 
+      id: '1', 
+      name: '微信好友', 
+      icon: 'wechat', 
+      color: '#07c160', 
+      type: 'material',
+      onPress: () => Alert.alert('分享', '分享到微信好友')
+    },
+    { 
+      id: '2', 
+      name: '朋友圈', 
+      icon: 'camera-iris', 
+      color: '#07c160', 
+      type: 'material',
+      onPress: () => Alert.alert('分享', '分享到朋友圈')
+    },
+    { 
+      id: '3', 
+      name: 'QQ好友', 
+      icon: 'qqchat', 
+      color: '#00a4ff', 
+      type: 'ant',
+      onPress: () => Alert.alert('分享', '分享到QQ好友')
+    },
+    { 
+      id: '4', 
+      name: '微博', 
+      icon: 'logo-weibo', 
+      color: '#ff8200', 
+      type: 'ionicon',
+      onPress: () => Alert.alert('分享', '分享到微博')
+    },
+  ];
+  
+  const customActions: ShareItem[] = [
+    { 
+      id: '1', 
+      name: '保存图片', 
+      icon: 'download', 
+      type: 'feather',
+      onPress: () => Alert.alert('保存', '保存图片到相册')
+    },
+    { 
+      id: '2', 
+      name: '复制链接', 
+      icon: 'link', 
+      type: 'feather',
+      onPress: () => Alert.alert('复制', '链接已复制到剪贴板')
+    },
+    { 
+      id: '3', 
+      name: '举报', 
+      icon: 'alert-circle', 
+      type: 'feather',
+      onPress: () => Alert.alert('举报', '举报内容')
+    },
+    { 
+      id: '4', 
+      name: '不感兴趣', 
+      icon: 'thumbs-down', 
+      type: 'material',
+      onPress: () => Alert.alert('不感兴趣', '将减少类似内容推荐')
+    },
+  ];
   
   const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
@@ -326,138 +372,78 @@ export default function PostDetailScreen() {
       </View>
 
       {/* Share Modal */}
-      <Modal
+      <ShareModal 
         visible={showShareModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowShareModal(false)}
-      >
-        <TouchableOpacity 
-          style={styles.modalOverlay} 
-          activeOpacity={1} 
-          onPress={() => setShowShareModal(false)}
-        >
-          <View style={styles.shareModalContent}>
-            <View style={styles.shareHeader}>
-              <Text style={styles.shareTitle}>分享至</Text>
-              <TouchableOpacity onPress={() => setShowShareModal(false)}>
-                <Ionicons name="close" size={24} color="#333" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Recent Contacts */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.shareRow}>
-              {SHARE_CONTACTS.map((contact, index) => (
-                <TouchableOpacity key={index} style={styles.shareItem}>
-                  <Image source={{ uri: contact.avatar }} style={styles.shareAvatar} />
-                  <Text style={styles.shareName} numberOfLines={2}>{contact.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-
-            {/* Apps */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.shareRow}>
-              {SHARE_APPS.map((app, index) => (
-                <TouchableOpacity key={index} style={styles.shareItem}>
-                  <View style={[styles.shareIconCircle, { backgroundColor: 'white' }]}>
-                    {app.type === 'ionicon' && <Ionicons name={app.icon as any} size={28} color={app.color} />}
-                    {app.type === 'material' && <MaterialCommunityIcons name={app.icon as any} size={28} color={app.color} />}
-                    {app.type === 'ant' && <AntDesign name={app.icon as any} size={28} color={app.color} />}
-                    {app.type === 'feather' && <Feather name={app.icon as any} size={28} color={app.color} />}
-                  </View>
-                  <Text style={styles.shareName}>{app.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-
-            {/* Actions */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.shareRow}>
-              {SHARE_ACTIONS.map((action, index) => (
-                <TouchableOpacity key={index} style={styles.shareItem}>
-                  <View style={styles.shareActionCircle}>
-                    {action.type === 'ionicon' && <Ionicons name={action.icon as any} size={24} color="#666" />}
-                    {action.type === 'material' && <MaterialCommunityIcons name={action.icon as any} size={24} color="#666" />}
-                    {action.type === 'feather' && <Feather name={action.icon as any} size={24} color="#666" />}
-                  </View>
-                  <Text style={styles.shareName}>{action.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            
-            <View style={{ height: 20 }} />
-          </View>
-        </TouchableOpacity>
-      </Modal>
+        onClose={() => setShowShareModal(false)}
+        title="分享到"
+        showContacts={false}  // 不显示联系人
+        apps={customApps}
+        actions={customActions}
+      />
 
       {/* Comment Input Modal */}
-      <Modal
+      <BaseModal
         visible={showCommentInput}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowCommentInput(false)}
+        onClose={() => setShowCommentInput(false)}
+        title="写评论"
+        showCloseButton={false}
+        height="auto"
       >
-        <TouchableWithoutFeedback onPress={() => setShowCommentInput(false)}>
-           <View style={styles.modalOverlay} />
-        </TouchableWithoutFeedback>
-        
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.keyboardAvoidingView}
         >
-          <View style={styles.commentInputContainer}>
-            <View style={styles.inputWrapper}>
-              {selectedImage && (
-                <View style={{ marginBottom: 10, position: 'relative', alignSelf: 'flex-start' }}>
-                  <Image source={{ uri: selectedImage }} style={{ width: 100, height: 100, borderRadius: 8 }} />
-                  <TouchableOpacity 
-                    style={{ position: 'absolute', top: -8, right: -8, backgroundColor: '#fff', borderRadius: 10 }}
-                    onPress={() => setSelectedImage(null)}
-                  >
-                    <AntDesign name="closecircle" size={20} color="#999" />
-                  </TouchableOpacity>
-                </View>
-              )}
-              <TextInput
-                ref={inputRef}
-                style={styles.realInput}
-                placeholder="爱评论的人运气都不差"
-                placeholderTextColor="#999"
-                multiline
-                value={commentText}
-                onChangeText={setCommentText}
-              />
-            </View>
-            
-            <View style={styles.inputToolbar}>
-              <View style={styles.toolbarLeft}>
-                <TouchableOpacity style={styles.toolbarIcon}>
-                  <Text style={styles.atSymbol}>@</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarIcon}>
-                  <Feather name="smile" size={24} color="#333" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarIcon} onPress={pickImage}>
-                  <Feather name="image" size={24} color="#333" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarIcon}>
-                  <Feather name="mic" size={24} color="#333" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarIcon}>
-                  <AntDesign name="pluscircleo" size={24} color="#333" />
+          <View style={styles.inputWrapper}>
+            {selectedImage && (
+              <View style={{ marginBottom: 10, position: 'relative', alignSelf: 'flex-start' }}>
+                <Image source={{ uri: selectedImage }} style={{ width: 100, height: 100, borderRadius: 8 }} />
+                <TouchableOpacity 
+                  style={{ position: 'absolute', top: -8, right: -8, backgroundColor: '#fff', borderRadius: 10 }}
+                  onPress={() => setSelectedImage(null)}
+                >
+                  <AntDesign name="closecircle" size={20} color="#999" />
                 </TouchableOpacity>
               </View>
-              
-              <TouchableOpacity 
-                style={[styles.sendButton, { backgroundColor: (commentText || selectedImage) ? '#ff2442' : '#f5f5f5' }]}
-                disabled={!commentText && !selectedImage}
-                onPress={handleSend}
-              >
-                <Text style={[styles.sendButtonText, { color: (commentText || selectedImage) ? '#fff' : '#999' }]}>发送</Text>
+            )}
+            <TextInput
+              ref={inputRef}
+              style={styles.realInput}
+              placeholder="爱评论的人运气都不差"
+              placeholderTextColor="#999"
+              multiline
+              value={commentText}
+              onChangeText={setCommentText}
+            />
+          </View>
+          
+          <View style={styles.inputToolbar}>
+            <View style={styles.toolbarLeft}>
+              <TouchableOpacity style={styles.toolbarIcon}>
+                <Text style={styles.atSymbol}>@</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.toolbarIcon}>
+                <Feather name="smile" size={24} color="#333" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.toolbarIcon} onPress={pickImage}>
+                <Feather name="image" size={24} color="#333" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.toolbarIcon}>
+                <Feather name="mic" size={24} color="#333" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.toolbarIcon}>
+                <AntDesign name="pluscircleo" size={24} color="#333" />
               </TouchableOpacity>
             </View>
+            
+            <TouchableOpacity 
+              style={[styles.sendButton, { backgroundColor: (commentText || selectedImage) ? '#ff2442' : '#f5f5f5' }]}
+              disabled={!commentText && !selectedImage}
+              onPress={handleSend}
+            >
+              <Text style={[styles.sendButtonText, { color: (commentText || selectedImage) ? '#fff' : '#999' }]}>发送</Text>
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
-      </Modal>
+      </BaseModal>
     </SafeAreaView>
   );
 }
@@ -873,87 +859,12 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontWeight: '500',
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
-  shareModalContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingVertical: 16,
-  },
-  shareHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-    position: 'relative',
-    paddingHorizontal: 16,
-  },
-  shareTitle: {
+
+  realInput: {
     fontSize: 16,
-    fontWeight: '600',
     color: '#333',
-  },
-  shareRow: {
-    marginBottom: 24,
-    paddingHorizontal: 8,
-  },
-  shareItem: {
-    alignItems: 'center',
-    marginHorizontal: 12,
-    width: 60,
-  },
-  shareAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginBottom: 8,
-  },
-  shareName: {
-    fontSize: 12,
-    color: '#333',
-    textAlign: 'center',
-  },
-  shareIconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-    // Shadow for icons
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  shareActionCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  keyboardAvoidingView: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  commentInputContainer: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    textAlignVertical: 'top',
+    minHeight: 60,
   },
   inputWrapper: {
     backgroundColor: '#f5f5f5',
@@ -962,12 +873,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginBottom: 12,
     minHeight: 80,
-  },
-  realInput: {
-    fontSize: 16,
-    color: '#333',
-    textAlignVertical: 'top',
-    minHeight: 60,
   },
   inputToolbar: {
     flexDirection: 'row',

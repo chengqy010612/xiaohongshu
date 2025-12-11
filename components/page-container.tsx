@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, ViewStyle  , Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ThemedView } from './themed-view';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
 interface PageContainerProps {
   children: React.ReactNode;
@@ -27,6 +29,7 @@ export function PageContainer({ children, style, useTheme = true }: PageContaine
   if (useTheme) {
     return (
       <ThemedView style={containerStyle}>
+      <Stack.Screen options={{ headerShown: false }} />
         {children}
       </ThemedView>
     );
@@ -34,6 +37,7 @@ export function PageContainer({ children, style, useTheme = true }: PageContaine
 
   return (
     <View style={containerStyle}>
+      <Stack.Screen options={{ headerShown: false }} />
       {children}
     </View>
   );
@@ -42,5 +46,6 @@ export function PageContainer({ children, style, useTheme = true }: PageContaine
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
 });

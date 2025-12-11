@@ -1,28 +1,29 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  Image, 
-  TouchableOpacity, 
-  ScrollView, 
-  Dimensions, 
+import React, { useState } from "react"
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
   StatusBar,
-  Platform
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+  Platform,
+} from "react-native"
+import { Ionicons } from "@expo/vector-icons"
+import { SafeAreaView } from "react-native-safe-area-context"
+import Tabs from "@/components/custom-tab-view"
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window")
 
-const THEME_COLOR = '#FF2442'; // Xiaohongshu Red
-const BG_COLOR = '#121212'; // Dark Background
-const CARD_BG_COLOR = '#262626'; // Dark Card Background
-const TEXT_COLOR = '#FFFFFF';
-const SECONDARY_TEXT_COLOR = '#999999';
+const THEME_COLOR = "#FF2442" // Xiaohongshu Red
+const BG_COLOR = "#121212" // Dark Background
+const CARD_BG_COLOR = "#262626" // Dark Card Background
+const TEXT_COLOR = "#FFFFFF"
+const SECONDARY_TEXT_COLOR = "#999999"
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('notes');
+  const [activeTab, setActiveTab] = useState("notes")
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -31,7 +32,12 @@ export default function ProfilePage() {
       </TouchableOpacity>
       <View style={styles.headerRight}>
         <TouchableOpacity style={styles.bgButton}>
-          <Ionicons name="image-outline" size={16} color={TEXT_COLOR} style={{ marginRight: 4 }} />
+          <Ionicons
+            name="image-outline"
+            size={16}
+            color={TEXT_COLOR}
+            style={{ marginRight: 4 }}
+          />
           <Text style={styles.bgButtonText}>设置背景</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginLeft: 16 }}>
@@ -42,15 +48,17 @@ export default function ProfilePage() {
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 
   const renderUserInfo = () => (
     <View style={styles.userInfoContainer}>
       <View style={styles.avatarRow}>
         <View style={styles.avatarContainer}>
-          <Image 
-            source={{ uri: 'https://ui-avatars.com/api/?name=CC&background=FF2442&color=fff&size=128' }} 
-            style={styles.avatar} 
+          <Image
+            source={{
+              uri: "https://ui-avatars.com/api/?name=CC&background=FF2442&color=fff&size=128",
+            }}
+            style={styles.avatar}
           />
           <View style={styles.addIconContainer}>
             <Ionicons name="add" size={12} color="#000" />
@@ -60,13 +68,18 @@ export default function ProfilePage() {
           <Text style={styles.userName}>CC</Text>
           <View style={styles.idRow}>
             <Text style={styles.userId}>小红书号：1062787524</Text>
-            <Ionicons name="qr-code-outline" size={14} color={SECONDARY_TEXT_COLOR} style={{ marginLeft: 4 }} />
+            <Ionicons
+              name="qr-code-outline"
+              size={14}
+              color={SECONDARY_TEXT_COLOR}
+              style={{ marginLeft: 4 }}
+            />
           </View>
         </View>
       </View>
 
       <Text style={styles.bio}>点击这里，填写简介</Text>
-      
+
       <View style={styles.tagContainer}>
         <View style={styles.genderTag}>
           <Ionicons name="male" size={10} color="#6596D6" />
@@ -97,10 +110,14 @@ export default function ProfilePage() {
         </View>
       </View>
     </View>
-  );
+  )
 
   const renderQuickActions = () => (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickActionsScroll}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.quickActionsScroll}
+    >
       <View style={styles.quickActionCard}>
         <Text style={styles.quickActionTitle}>订单</Text>
         <Text style={styles.quickActionDesc}>查看我的订单</Text>
@@ -118,73 +135,87 @@ export default function ProfilePage() {
         <Text style={styles.quickActionDesc}>看过的笔记</Text>
       </View>
     </ScrollView>
-  );
+  )
 
-  const renderTabs = () => (
-    <View style={styles.tabContainer}>
-      <TouchableOpacity 
-        style={[styles.tabItem, activeTab === 'notes' && styles.activeTabItem]}
-        onPress={() => setActiveTab('notes')}
-      >
-        <Text style={[styles.tabText, activeTab === 'notes' && styles.activeTabText]}>笔记</Text>
-        {activeTab === 'notes' && <View style={styles.activeTabLine} />}
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.tabItem, activeTab === 'favorites' && styles.activeTabItem]}
-        onPress={() => setActiveTab('favorites')}
-      >
-        <Text style={[styles.tabText, activeTab === 'favorites' && styles.activeTabText]}>收藏</Text>
-        {activeTab === 'favorites' && <View style={styles.activeTabLine} />}
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.tabItem, activeTab === 'liked' && styles.activeTabItem]}
-        onPress={() => setActiveTab('liked')}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="lock-closed-outline" size={14} color={activeTab === 'liked' ? '#333' : '#999'} style={{ marginRight: 4 }} />
-            <Text style={[styles.tabText, activeTab === 'liked' && styles.activeTabText]}>赞过</Text>
-        </View>
-        {activeTab === 'liked' && <View style={styles.activeTabLine} />}
-      </TouchableOpacity>
-      <View style={{ flex: 1 }} />
-      <TouchableOpacity style={styles.searchIcon}>
-        <Ionicons name="search-outline" size={20} color="#666" />
-      </TouchableOpacity>
-    </View>
-  );
+  // const renderTabs = () => (
+  //   <View style={styles.tabContainer}>
+  //     <TouchableOpacity
+  //       style={[styles.tabItem, activeTab === 'notes' && styles.activeTabItem]}
+  //       onPress={() => setActiveTab('notes')}
+  //     >
+  //       <Text style={[styles.tabText, activeTab === 'notes' && styles.activeTabText]}>笔记</Text>
+  //       {activeTab === 'notes' && <View style={styles.activeTabLine} />}
+  //     </TouchableOpacity>
+  //     <TouchableOpacity
+  //       style={[styles.tabItem, activeTab === 'favorites' && styles.activeTabItem]}
+  //       onPress={() => setActiveTab('favorites')}
+  //     >
+  //       <Text style={[styles.tabText, activeTab === 'favorites' && styles.activeTabText]}>收藏</Text>
+  //       {activeTab === 'favorites' && <View style={styles.activeTabLine} />}
+  //     </TouchableOpacity>
+  //     <TouchableOpacity
+  //       style={[styles.tabItem, activeTab === 'liked' && styles.activeTabItem]}
+  //       onPress={() => setActiveTab('liked')}
+  //     >
+  //       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+  //           <Ionicons name="lock-closed-outline" size={14} color={activeTab === 'liked' ? '#333' : '#999'} style={{ marginRight: 4 }} />
+  //           <Text style={[styles.tabText, activeTab === 'liked' && styles.activeTabText]}>赞过</Text>
+  //       </View>
+  //       {activeTab === 'liked' && <View style={styles.activeTabLine} />}
+  //     </TouchableOpacity>
+  //     <View style={{ flex: 1 }} />
+  //     <TouchableOpacity style={styles.searchIcon}>
+  //       <Ionicons name="search-outline" size={20} color="#666" />
+  //     </TouchableOpacity>
+  //   </View>
+  // );
+    const [data] = useState([
+      { key: "notes", title: "笔记", component: () => <Text>笔记</Text> },
+      { key: "collections", title: "收藏", component: () => <Text>收藏</Text> },
+      { key: "likes", title: "点赞", component: () => <Text>点赞</Text> },
+    ])
+  function renderTabs() {
+
+    return (
+      <Tabs
+        data={data}
+        // 尾部内容
+      />
+    )
+  }
 
   const renderSubTabs = () => {
-    if (activeTab === 'notes') {
+    if (activeTab === "notes") {
       return (
         <View style={styles.subTabContainer}>
-            <Text style={styles.subTabTextActive}>公开 0</Text>
-            <View style={styles.subTabItem}>
-                <Ionicons name="lock-closed-outline" size={12} color="#999" />
-                <Text style={styles.subTabText}>私密 0</Text>
-            </View>
-             <Text style={styles.subTabText}>合集 0</Text>
+          <Text style={styles.subTabTextActive}>公开 0</Text>
+          <View style={styles.subTabItem}>
+            <Ionicons name="lock-closed-outline" size={12} color="#999" />
+            <Text style={styles.subTabText}>私密 0</Text>
+          </View>
+          <Text style={styles.subTabText}>合集 0</Text>
         </View>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   const renderEmptyState = () => (
     <View style={styles.emptyStateContainer}>
       <View style={styles.emptyImageContainer}>
-         <Ionicons name="images-outline" size={64} color="#ddd" />
+        <Ionicons name="images-outline" size={64} color="#ddd" />
       </View>
       <Text style={styles.emptyStateText}>发笔记问问大家~</Text>
       <TouchableOpacity style={styles.publishButton}>
         <Text style={styles.publishButtonText}>去发布</Text>
       </TouchableOpacity>
     </View>
-  );
+  )
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <StatusBar barStyle="light-content" backgroundColor={BG_COLOR} />
-      <ScrollView 
+      <ScrollView
         stickyHeaderIndices={[3]} // The Tabs component index
         showsVerticalScrollIndicator={false}
       >
@@ -193,14 +224,14 @@ export default function ProfilePage() {
         {renderQuickActions()}
         {renderTabs()}
         <View style={styles.contentContainer}>
-            {renderSubTabs()}
-            {renderEmptyState()}
+          {renderSubTabs()}
+          {renderEmptyState()}
         </View>
         {/* Extra padding for bottom tab bar */}
         <View style={{ height: 100 }} />
       </ScrollView>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -209,20 +240,20 @@ const styles = StyleSheet.create({
     backgroundColor: BG_COLOR,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   bgButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -230,18 +261,18 @@ const styles = StyleSheet.create({
   bgButtonText: {
     color: TEXT_COLOR,
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   userInfoContainer: {
     paddingHorizontal: 16,
     marginTop: 10,
   },
   avatarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatarContainer: {
-    position: 'relative',
+    position: "relative",
   },
   avatar: {
     width: 80,
@@ -251,31 +282,31 @@ const styles = StyleSheet.create({
     borderColor: BG_COLOR,
   },
   addIconContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: '#FFD700', // Yellow badge
+    backgroundColor: "#FFD700", // Yellow badge
     width: 20,
     height: 20,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 2,
     borderColor: BG_COLOR,
   },
   nameContainer: {
     marginLeft: 16,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   userName: {
     color: TEXT_COLOR,
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   idRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   userId: {
     color: SECONDARY_TEXT_COLOR,
@@ -288,30 +319,30 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   tagContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 16,
   },
   genderTag: {
-    backgroundColor: 'rgba(101, 150, 214, 0.2)', // Light blue bg
+    backgroundColor: "rgba(101, 150, 214, 0.2)", // Light blue bg
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   statItem: {
-    alignItems: 'center',
+    alignItems: "center",
     marginRight: 24,
   },
   statNumber: {
     color: TEXT_COLOR,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   statLabel: {
     color: SECONDARY_TEXT_COLOR,
@@ -319,32 +350,32 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   actionButtons: {
-    flexDirection: 'row',
-    marginLeft: 'auto',
+    flexDirection: "row",
+    marginLeft: "auto",
   },
   editButton: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: "rgba(255,255,255,0.1)",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: "rgba(255,255,255,0.2)",
   },
   editButtonText: {
     color: TEXT_COLOR,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   settingButton: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: "rgba(255,255,255,0.1)",
     width: 36,
     height: 36,
     borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: "rgba(255,255,255,0.2)",
   },
   quickActionsScroll: {
     paddingLeft: 16,
@@ -357,12 +388,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: 100,
     height: 60,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   quickActionTitle: {
     color: TEXT_COLOR,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   quickActionDesc: {
@@ -370,9 +401,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   tabContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF', // Changed to White
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF", // Changed to White
     paddingHorizontal: 16,
     height: 48,
     borderTopLeftRadius: 16, // Rounded top corners
@@ -381,26 +412,24 @@ const styles = StyleSheet.create({
   tabItem: {
     marginRight: 24,
     height: 48,
-    justifyContent: 'center',
-    position: 'relative',
+    justifyContent: "center",
+    position: "relative",
   },
-  activeTabItem: {
-    
-  },
+  activeTabItem: {},
   tabText: {
-    color: '#999', // Default grey
+    color: "#999", // Default grey
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   activeTabText: {
-    color: '#333', // Active dark
-    fontWeight: 'bold',
+    color: "#333", // Active dark
+    fontWeight: "bold",
   },
   activeTabLine: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    left: '25%', // Centered relative to text width roughly
-    width: '50%',
+    left: "25%", // Centered relative to text width roughly
+    width: "50%",
     height: 2,
     backgroundColor: THEME_COLOR,
     borderRadius: 1,
@@ -410,53 +439,53 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     minHeight: 500, // Ensure enough height
-    backgroundColor: '#fff', 
+    backgroundColor: "#fff",
     paddingTop: 16,
   },
   subTabContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
     marginBottom: 40,
   },
   subTabText: {
-    color: '#999',
+    color: "#999",
     fontSize: 14,
     marginRight: 20,
   },
   subTabTextActive: {
-    color: '#333',
+    color: "#333",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginRight: 20,
   },
   subTabItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginRight: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20,
   },
   emptyStateContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 40,
   },
   emptyImageContainer: {
     marginBottom: 16,
   },
   emptyStateText: {
-    color: '#666',
+    color: "#666",
     fontSize: 14,
     marginBottom: 20,
   },
   publishButton: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: 32,
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   publishButtonText: {
-    color: '#333',
+    color: "#333",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
-});
+})
