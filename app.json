@@ -28,7 +28,8 @@
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "package": "com.chengqingyuan.xiaohongshu"
     },
     "web": {
       "output": "static",
@@ -56,7 +57,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "a59b0058-2442-4ab6-896f-f2666fe18bbb"
+        "projectId": "d21e5ec9-1e04-466b-bce1-971da4a2a68c"
       }
     }
   }
